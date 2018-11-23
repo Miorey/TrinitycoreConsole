@@ -50,8 +50,7 @@ abstract class BaseClient
      * BaseClient constructor.
      * @param string $username Username used to connect to the server
      * @param string $password Password used to connect to the server
-     * @param boolean $createNow Should the connection be created as soon as possible
-     * @throws SoapException | \RuntimeException
+     * @throws SoapException
      */
     public function __construct(string $username, string $password)
     {
@@ -74,7 +73,7 @@ abstract class BaseClient
      */
     public function setServerAddress(string $serverAddress): void
     {
-        if ($serverAddress=== null) {
+        if ($serverAddress==='') {
             throw new \RuntimeException('SOAP Address cannot be null!');
         }
         $this->serverAddress = $serverAddress;
@@ -96,7 +95,7 @@ abstract class BaseClient
      */
     public function setServerPort(int $serverPort): void
     {
-        if ($serverPort === null) {
+        if ($serverPort < 1) {
             throw new \RuntimeException('SOAP Port cannot be null!');
         }
         $this->serverPort = $serverPort;

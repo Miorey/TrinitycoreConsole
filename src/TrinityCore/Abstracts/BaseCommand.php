@@ -40,6 +40,7 @@ abstract class BaseCommand
     /**
      * BaseCommand constructor.
      * @param \SoapClient $client
+     * @throws \ReflectionException
      */
     public function __construct(\SoapClient $client)
     {
@@ -89,6 +90,7 @@ abstract class BaseCommand
 
     /**
      * Prepare Command Name Variable
+     * @throws \ReflectionException
      */
     protected function prepareCommand()
     {
@@ -97,6 +99,7 @@ abstract class BaseCommand
 
     /**
      * Prepare Available Methods For Specified Command
+     * @throws \ReflectionException
      */
     protected function prepareMethods()
     {

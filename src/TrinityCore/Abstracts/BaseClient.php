@@ -189,10 +189,10 @@ abstract class BaseClient
     public function createConnection()
     {
         $this->client = new \SoapClient(null, [
-            'location'      =>  'http://' . $this->serverAddress . ':' . $this->serverPort . '/',
+            'location'      =>  'http://' . $this->getServerAddress() . ':' . $this->getServerPort() . '/',
             'uri'           =>  'urn:TC',
-            'login'         =>  $this->username,
-            'password'      =>  $this->password,
+            'login'         =>  $this->getUsername(),
+            'password'      =>  $this->getPassword(),
             'style'         =>  SOAP_RPC,
             'keep_alive'    =>  false
         ]);

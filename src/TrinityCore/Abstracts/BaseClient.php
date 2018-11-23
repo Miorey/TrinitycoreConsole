@@ -32,7 +32,7 @@ abstract class BaseClient
      * SoapClient Instance
      * @var \SoapClient
      */
-    private $client = null;
+    private $client;
 
     /**
      * Username used to connect to the server
@@ -53,15 +53,12 @@ abstract class BaseClient
      * @param boolean $createNow Should the connection be created as soon as possible
      * @throws SoapException | \RuntimeException
      */
-    public function __construct(string $username, string $password, bool $createNow = true)
+    public function __construct(string $username, string $password)
     {
         $this->isSoapEnabled();
         $this->setUsername($username);
         $this->setPassword($password);
-        $this->validateSettings();
-        if ($createNow) {
-            $this->createConnection();
-        }
+        $this->createConnection();
     }
 
     /**
@@ -77,8 +74,14 @@ abstract class BaseClient
      */
     public function setServerAddress(string $serverAddress): void
     {
+        if ($serverAddress=== null) {
+            throw new \RuntimeException('SOAP Address cannot be null!');
+        }
         $this->serverAddress = $serverAddress;
     }
+
+
+
 
     /**
      * @return int
@@ -93,6 +96,9 @@ abstract class BaseClient
      */
     public function setServerPort(int $serverPort): void
     {
+        if ($serverPort === null) {
+            throw new \RuntimeException('SOAP Port cannot be null!');
+        }
         $this->serverPort = $serverPort;
     }
 
@@ -104,6 +110,9 @@ abstract class BaseClient
      */
     public function setUsername(string $username)
     {
+        if ($username === '') {
+            throw new \RuntimeException('SOAP Username cannot be null!');
+        }
         $this->username = $username;
     }
 
@@ -122,6 +131,9 @@ abstract class BaseClient
      */
     public function setPassword(string $password)
     {
+        if ($password === '') {
+            throw new \RuntimeException('SOAP Password cannot be null!');
+        }
         $this->password = $password;
     }
 
@@ -188,14 +200,16 @@ abstract class BaseClient
      */
     public function createConnection()
     {
-        $this->client = new \SoapClient(null, [
+        $this->setClient(new \SoapClient(null, [
             'location'      =>  'http://' . $this->getServerAddress() . ':' . $this->getServerPort() . '/',
             'uri'           =>  'urn:TC',
             'login'         =>  $this->getUsername(),
             'password'      =>  $this->getPassword(),
             'style'         =>  SOAP_RPC,
             'keep_alive'    =>  false
-        ]);
+        ]));
+
+
     }
 
     /**
@@ -208,6 +222,16 @@ abstract class BaseClient
     }
 
     /**
+     * @param \SoapClient $client
+     */
+    public function setClient(\SoapClient $client): void
+    {
+        $this->client = $client;
+    }
+
+
+
+    /**
      * Check if SOAP extension is enabled
      * @throws SoapException
      * @codeCoverageIgnore
@@ -216,26 +240,6 @@ abstract class BaseClient
     {
         if (!extension_loaded('soap')) {
             throw new SoapException('FreedomNet requires SOAP extension to be enabled.' . PHP_EOL . 'Please enable SOAP extension');
-        }
-    }
-
-    /**
-     * Validate Connection Settings
-     * @codeCoverageIgnore
-     */
-    protected function validateSettings()
-    {
-        if ($this->serverAddress === null) {
-            throw new \RuntimeException('SOAP Address cannot be null!');
-        }
-        if ($this->serverPort === null) {
-            throw new \RuntimeException('SOAP Port cannot be null!');
-        }
-        if ($this->username === null) {
-            throw new \RuntimeException('SOAP Username cannot be null!');
-        }
-        if ($this->password === null) {
-            throw new \RuntimeException('SOAP Password cannot be null!');
         }
     }
 }

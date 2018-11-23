@@ -20,19 +20,19 @@ abstract class BaseClient
      * Server Address
      * @var string
      */
-    protected $serverAddress = '127.0.0.1';
+    private $serverAddress = '127.0.0.1';
 
     /**
      * Server Port
      * @var int
      */
-    protected $serverPort = 7878;
+    private $serverPort = 7878;
 
     /**
      * SoapClient Instance
-     * @var null|\SoapClient
+     * @var \SoapClient
      */
-    protected $client = null;
+    private $client = null;
 
     /**
      * Username used to connect to the server
@@ -63,6 +63,40 @@ abstract class BaseClient
             $this->createConnection();
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getServerAddress(): string
+    {
+        return $this->serverAddress;
+    }
+
+    /**
+     * @param string $serverAddress
+     */
+    public function setServerAddress(string $serverAddress): void
+    {
+        $this->serverAddress = $serverAddress;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServerPort(): int
+    {
+        return $this->serverPort;
+    }
+
+    /**
+     * @param int $serverPort
+     */
+    public function setServerPort(int $serverPort): void
+    {
+        $this->serverPort = $serverPort;
+    }
+
+
 
     /**
      * Set username variable

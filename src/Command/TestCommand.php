@@ -34,6 +34,7 @@ class TestCommand extends Command
      * @param OutputInterface $output
      * @return int|null|void
      * @throws \App\TrinityCore\Exceptions\SoapException
+     * @throws \ReflectionException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

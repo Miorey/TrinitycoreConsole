@@ -9,33 +9,33 @@ abstract class BaseCommand
 
     /**
      * Client Instance Object
-     * @var null|\SoapClient
+     * @var \SoapClient
      */
-    protected $clientInstance = null;
+    private $clientInstance = null;
 
     /**
      * Name of the command
      * @var null|string
      */
-    protected $command = null;
+    private $command = null;
 
     /**
      * Available methods
      * @var array
      */
-    protected $methods = [];
+    private $methods = [];
 
     /**
      * Commands which do not need to be prefixed with BASE command
      * @var array
      */
-    protected $doNotPrefix = [];
+    private $doNotPrefix = [];
 
     /**
      * Commands which methods should be concatenated
      * @var array
      */
-    protected $concatenate = [];
+    private $concatenate = [];
 
     /**
      * BaseCommand constructor.
@@ -44,7 +44,7 @@ abstract class BaseCommand
      */
     public function __construct(\SoapClient $client)
     {
-        $this->clientInstance = $client;
+        $this->setClientInstance($client);
         $this->prepareCommand();
         $this->prepareMethods();
     }
@@ -57,6 +57,88 @@ abstract class BaseCommand
     {
         return $this->command;
     }
+
+    /**
+     * @return array
+     */
+    public function getDoNotPrefix(): array
+    {
+        return $this->doNotPrefix;
+    }
+
+    /**
+     * @param array $doNotPrefix
+     */
+    public function setDoNotPrefix(array $doNotPrefix): void
+    {
+        $this->doNotPrefix = $doNotPrefix;
+    }
+
+    /**
+     * @return \SoapClient
+     */
+    public function getClientInstance(): \SoapClient
+    {
+        return $this->clientInstance;
+    }
+
+    /**
+     * @param \SoapClient $clientInstance
+     */
+    public function setClientInstance(\SoapClient $clientInstance): void
+    {
+        $this->clientInstance = $clientInstance;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCommand(): ?string
+    {
+        return $this->command;
+    }
+
+    /**
+     * @param null|string $command
+     */
+    public function setCommand(?string $command): void
+    {
+        $this->command = $command;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+    /**
+     * @param array $methods
+     */
+    public function setMethods(array $methods): void
+    {
+        $this->methods = $methods;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConcatenate(): array
+    {
+        return $this->concatenate;
+    }
+
+    /**
+     * @param array $concatenate
+     */
+    public function setConcatenate(array $concatenate): void
+    {
+        $this->concatenate = $concatenate;
+    }
+
+
 
     /**
      * Get Command Methods
@@ -75,7 +157,8 @@ abstract class BaseCommand
      */
     public function help(string $methodName = '')
     {
-        return $this->processOutput($this->clientInstance->executeCommand(new \SoapParam(trim(sprintf('help %s %s', $this->command, $methodName)), 'command')), true);
+        return $this->processOutput($this->getClientInstance()->executeCommand(
+            new \SoapParam(trim(sprintf('help %s %s', $this->getCommand(), $methodName)), 'command')), true);
     }
 
     /**
@@ -94,7 +177,7 @@ abstract class BaseCommand
      */
     protected function prepareCommand()
     {
-        $this->command = strtolower((new \ReflectionClass(get_called_class()))->getShortName());
+        $this->setCommand(strtolower((new \ReflectionClass(get_called_class()))->getShortName()));
     }
 
     /**
@@ -136,9 +219,9 @@ abstract class BaseCommand
     {
         preg_match_all('/((?:^|[A-Z])[a-z]+)/', $method, $matches);
         $elements = array_map('strtolower', $matches[0]);
-        $command = (!in_array($method, $this->doNotPrefix)) ? implode(' ', array_merge([$this->command], $elements)) : implode(' ', $elements);
-        if (in_array($method, $this->concatenate)) {
-            $command = $this->command . $method;
+        $command = (!in_array($method, $this->getDoNotPrefix())) ? implode(' ', array_merge([$this->getCommand()], $elements)) : implode(' ', $elements);
+        if (in_array($method, $this->getConcatenate())) {
+            $command = $this->getCommand() . $method;
         }
         return trim($this->parseCommand($command));
     }
@@ -171,7 +254,7 @@ abstract class BaseCommand
             'class'         =>  get_called_class(),
             'method'        =>  $methodName,
             'parameters'    =>  $parameters,
-            'query'         =>  $this->methods[$methodName]
+            'query'         =>  $this->getMethods()[$methodName]
         ];
         $structure['query']['prepared'] = str_replace('  ', ' ', trim(implode(' ', [
             $structure['query']['command'],
@@ -179,7 +262,7 @@ abstract class BaseCommand
         ])));
         try {
             return $this->processOutput(
-                $this->clientInstance->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command'))
+                $this->getClientInstance()->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command'))
             );
         } catch (\SoapFault $exception) {
             return [

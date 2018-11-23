@@ -5,11 +5,11 @@ use App\TrinityCore\Commands\Account;
 use App\TrinityCore\Commands\BNetAccount;
 use App\TrinityCore\Commands\GM;
 use App\TrinityCore\Commands\Guild;
-use App\TrinityCore\Console\Commands\LFG;
-use App\TrinityCore\Console\Commands\Character;
-use App\TrinityCore\Console\Commands\Reset;
-use App\TrinityCore\Console\Commands\Send;
-use App\TrinityCore\Console\Commands\Server;
+use App\TrinityCore\Commands\LFG;
+use App\TrinityCore\Commands\Character;
+use App\TrinityCore\Commands\Reset;
+use App\TrinityCore\Commands\Send;
+use App\TrinityCore\Commands\Server;
 
 /**
  * Class Client
@@ -17,6 +17,7 @@ use App\TrinityCore\Console\Commands\Server;
  */
 class Client extends BaseClient
 {
+
 
     /**
      * Get Account Command Instance

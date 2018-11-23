@@ -1,6 +1,8 @@
 <?php
 namespace App\TrinityCore\Abstracts;
 
+use App\TrinityCore\Exceptions\SoapException;
+
 /**
  * Class BaseClient
  * @package FreedomCore\TrinityCore\Console\Abstracts
@@ -49,13 +51,13 @@ abstract class BaseClient
      * @param string $username Username used to connect to the server
      * @param string $password Password used to connect to the server
      * @param boolean $createNow Should the connection be created as soon as possible
-     * @throws \Exception
+     * @throws SoapException | \RuntimeException
      */
     public function __construct(string $username, string $password, bool $createNow = true)
     {
         $this->isSoapEnabled();
-        $this->username = $username;
-        $this->password = $password;
+        $this->setUsername($username);
+        $this->setPassword($password);
         $this->validateSettings();
         if ($createNow) {
             $this->createConnection();
@@ -173,13 +175,13 @@ abstract class BaseClient
 
     /**
      * Check if SOAP extension is enabled
-     * @throws \Exception
+     * @throws SoapException
      * @codeCoverageIgnore
      */
     protected function isSoapEnabled()
     {
         if (!extension_loaded('soap')) {
-            throw new \Exception('FreedomNet requires SOAP extension to be enabled.' . PHP_EOL . 'Please enable SOAP extension');
+            throw new SoapException('FreedomNet requires SOAP extension to be enabled.' . PHP_EOL . 'Please enable SOAP extension');
         }
     }
 

@@ -29,23 +29,16 @@ class TestCommand extends Command
             ->setHelp('No Help 4 U');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \App\TrinityCore\Exceptions\SoapException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $console = new Client('gabknight', 'GAB13naki');
         $console->send()->message('test', 'Message in the middle of the screen by administrator');
 
-        // outputs multiple lines to the console (adding "\n" at the end of each line)
-        $output->writeln([
-            'User Creator',
-            '============',
-            '',
-        ]);
-
-        // outputs a message followed by a "\n"
-        $output->writeln('Whoa!');
-
-        // outputs a message without adding a "\n" at the end of the line
-        $output->write('You are about to ');
-        $output->write('create a user.');
     }
 }

@@ -261,6 +261,7 @@ abstract class BaseCommand
             str_replace(explode(' ', $structure['query']['query']), $structure['parameters'], $structure['query']['query'])
         ])));
         try {
+            print($structure['query']['prepared']);
             return $this->processOutput(
                 $this->getClientInstance()->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command'))
             );

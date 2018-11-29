@@ -260,19 +260,9 @@ abstract class BaseCommand
             $structure['query']['command'],
             str_replace(explode(' ', $structure['query']['query']), $structure['parameters'], $structure['query']['query'])
         ])));
-        try {
-            print($structure['query']['prepared']);
-            return $this->processOutput(
-                $this->getClientInstance()->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command'))
-            );
-        } catch (\SoapFault $exception) {
-            return [
-                'status'    =>  'failed',
-                'code'      =>  $exception->getCode(),
-                'message'   =>  trim($exception->getMessage()),
-                'query'     =>  trim($structure['query']['prepared'])
-            ];
-        }
+        print($structure['query']['prepared']);
+        return $this->processOutput($this->getClientInstance()->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command')));
+
     }
 
     /**

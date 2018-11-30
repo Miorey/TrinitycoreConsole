@@ -186,8 +186,6 @@ abstract class BaseCommand
      */
     protected function prepareMethods()
     {
-        $globalMethods = get_class_methods(get_called_class());
-        print_r(get_class_methods(__CLASS__));
         $classMethods = array_diff(get_class_methods(get_called_class()), get_class_methods(__CLASS__));
         foreach ($classMethods as $method) {
             $command = $this->generateCommand($method);
@@ -218,15 +216,19 @@ abstract class BaseCommand
      * Generate Command Query String
      * @param string $class
      * @param string $method
-     * @return string
+     * @return string: list of command parameters
      * @throws \ReflectionException
      */
     protected function generateQueryString(string $class, string $method) : string
     {
         $reflection =  new \ReflectionMethod($class, $method);
-        return implode(' ', array_map(function ($item) {
-            return '%' . $item->getName() . '%';
-        }, $reflection->getParameters()));
+
+        return implode(' ', array_map(
+            function (\ReflectionParameter $item) {
+                return '%' . $item->getName() . '%';
+                },
+            $reflection->getParameters()
+        ));
     }
 
     /**

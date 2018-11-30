@@ -247,11 +247,15 @@ abstract class BaseCommand
             'query'         =>  $this->getMethods()[$methodName]
         ];
         print($structure['query']['query']."\n");
-        $structure['query']['prepared'] = str_replace('  ', ' ', trim(implode(' ', [
+
+        print_r($structure['query']['query']);
+
+        $prepared = trim(implode(' ', [
             $structure['query']['command'],
             str_replace(explode(' ', $structure['query']['query']), $structure['parameters'], $structure['query']['query'])
-        ])));
-        return $this->processOutput($this->getClientInstance()->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command')));
+        ]));
+
+        return $this->processOutput($this->getClientInstance()->executeCommand(new \SoapParam($prepared, 'command')));
 
     }
 

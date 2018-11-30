@@ -14,24 +14,6 @@ abstract class BaseCommand
     private $clientInstance = null;
 
     /**
-     * Name of the command
-     * @var null|string
-     */
-    private $command = null;
-
-    /**
-     * Available methods
-     * @var array
-     */
-    private $methods = [];
-
-    /**
-     * Commands which do not need to be prefixed with BASE command
-     * @var array
-     */
-    private $doNotPrefix = [];
-
-    /**
      * Commands which methods should be concatenated
      * @var array
      */
@@ -40,38 +22,10 @@ abstract class BaseCommand
     /**
      * BaseCommand constructor.
      * @param \SoapClient $client
-     * @throws \ReflectionException
      */
     public function __construct(\SoapClient $client)
     {
         $this->setClientInstance($client);
-        $this->prepareCommand();
-        $this->prepareMethods();
-    }
-
-    /**
-     * Get Command Name
-     * @return string
-     */
-    public function getCommandName() : string
-    {
-        return $this->command;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDoNotPrefix(): array
-    {
-        return $this->doNotPrefix;
-    }
-
-    /**
-     * @param array $doNotPrefix
-     */
-    public function setDoNotPrefix(array $doNotPrefix): void
-    {
-        $this->doNotPrefix = $doNotPrefix;
     }
 
     /**
@@ -90,37 +44,6 @@ abstract class BaseCommand
         $this->clientInstance = $clientInstance;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getCommand(): ?string
-    {
-        return $this->command;
-    }
-
-    /**
-     * @param null|string $command
-     */
-    public function setCommand(?string $command): void
-    {
-        $this->command = $command;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMethods(): array
-    {
-        return $this->methods;
-    }
-
-    /**
-     * @param array $methods
-     */
-    public function setMethods(array $methods): void
-    {
-        $this->methods = $methods;
-    }
 
     /**
      * @return array
@@ -139,26 +62,17 @@ abstract class BaseCommand
     }
 
 
-
-    /**
-     * Get Command Methods
-     * @return array
-     */
-    public function getCommandMethods() : array
-    {
-        return $this->methods;
-    }
-
     /**
      * Execute Help Command
      * @param string $methodName
      * @return array
      * @codeCoverageIgnore
+     * @throws \ReflectionException
      */
     public function help(string $methodName = '')
     {
         return $this->processOutput($this->getClientInstance()->executeCommand(
-            new \SoapParam(trim(sprintf('help %s %s', $this->getCommand(), $methodName)), 'command')), true);
+            new \SoapParam(trim(sprintf('help %s %s', $this->prepareCommand(), $methodName)), 'command')), true);
     }
 
     /**
@@ -177,39 +91,7 @@ abstract class BaseCommand
      */
     private function prepareCommand()
     {
-        $this->setCommand(strtolower((new \ReflectionClass(get_called_class()))->getShortName()));
-    }
-
-    /**
-     * Prepare Available Methods For Specified Command
-     * @throws \ReflectionException
-     */
-    private function prepareMethods()
-    {
-        $classMethods = array_diff(get_class_methods(get_called_class()), get_class_methods(__CLASS__));
-        foreach ($classMethods as $method) {
-            $command = $this->generateCommand($method);
-            $this->methods[$method] = [
-                'command'   =>  $command,
-                'query'     =>  $this->generateQueryString(get_called_class(), $method)
-            ];
-        }
-    }
-
-    /**
-     * Generate Command String
-     * @param string $method
-     * @return string
-     */
-    private function generateCommand(string $method) : string
-    {
-        preg_match_all('/((?:^|[A-Z])[a-z]+)/', $method, $matches);
-        $elements = array_map('strtolower', $matches[0]);
-        $command = (!in_array($method, $this->getDoNotPrefix())) ? implode(' ', array_merge([$this->getCommand()], $elements)) : implode(' ', $elements);
-        if (in_array($method, $this->getConcatenate())) {
-            $command = $this->getCommand() . $method;
-        }
-        return trim($this->parseCommand($command));
+        return strtolower((new \ReflectionClass(get_called_class()))->getShortName());
     }
 
     /**
@@ -237,22 +119,16 @@ abstract class BaseCommand
      * @param array $parameters
      * @return array|string
      * @codeCoverageIgnore
+     * @throws \ReflectionException
      */
     protected function executeCommand(string $methodName, array $parameters)
     {
-        $structure = [
-            'class'         =>  get_called_class(),
-            'method'        =>  $methodName,
-            'parameters'    =>  $parameters,
-            'query'         =>  $this->getMethods()[$methodName]
-        ];
-        print($structure['query']['query']."\n");
-
-        print_r($structure['query']['query']);
+        $fullCommand = $this->generateQueryString(get_called_class(), $methodName);
 
         $prepared = trim(implode(' ', [
-            $structure['query']['command'],
-            str_replace(explode(' ', $structure['query']['query']), $structure['parameters'], $structure['query']['query'])
+            $this->prepareCommand(),
+            $methodName,
+            str_replace(explode(' ', $fullCommand), $parameters, $fullCommand)
         ]));
 
         return $this->processOutput($this->getClientInstance()->executeCommand(new \SoapParam($prepared, 'command')));
@@ -271,30 +147,4 @@ abstract class BaseCommand
         return array_filter(explode(PHP_EOL, $commandOutput));
     }
 
-    /**
-     * Parse and Process Command
-     * @param string $command
-     * @return string
-     */
-    private function parseCommand(string $command) : string
-    {
-        $replacements = [
-            'gm level'              =>  'gmlevel',
-            'game account create'   =>  'gameaccountcreate',
-            'list game accounts'    =>  'listgameaccounts',
-            'diff time'             =>  'difftime',
-            'log level'             =>  'loglevel',
-            'save all'              =>  'saveall',
-            'name announce'         =>  'nameannounce',
-            'change faction'        =>  'changefaction',
-            'change race'           =>  'changerace'
-        ];
-        foreach ($replacements as $key => $value) {
-            if (strstr($command, $key)) {
-                $command = str_replace($key, $value, $command);
-                break;
-            }
-        }
-        return $command;
-    }
 }

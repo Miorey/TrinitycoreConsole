@@ -187,20 +187,8 @@ abstract class BaseCommand
     protected function prepareMethods()
     {
         $globalMethods = get_class_methods(get_called_class());
-        $classMethods = array_diff($globalMethods, [
-            '__construct',
-            'prepareCommand',
-            'prepareMethods',
-            'generateCommand',
-            'generateQueryString',
-            'executeCommand',
-            'processOutput',
-            'help',
-            'inQuotes',
-            'parseCommand',
-            'getCommandName',
-            'getCommandMethods'
-        ]);
+        print_r(get_class_methods(__CLASS__));
+        $classMethods = array_diff(get_class_methods(get_called_class()), get_class_methods(__CLASS__));
         foreach ($classMethods as $method) {
             $command = $this->generateCommand($method);
             $this->methods[$method] = [
@@ -256,11 +244,11 @@ abstract class BaseCommand
             'parameters'    =>  $parameters,
             'query'         =>  $this->getMethods()[$methodName]
         ];
+        print($structure['query']['query']."\n");
         $structure['query']['prepared'] = str_replace('  ', ' ', trim(implode(' ', [
             $structure['query']['command'],
             str_replace(explode(' ', $structure['query']['query']), $structure['parameters'], $structure['query']['query'])
         ])));
-        print($structure['query']['prepared']);
         return $this->processOutput($this->getClientInstance()->executeCommand(new \SoapParam(trim($structure['query']['prepared']), 'command')));
 
     }

@@ -175,7 +175,7 @@ abstract class BaseCommand
      * Prepare Command Name Variable
      * @throws \ReflectionException
      */
-    protected function prepareCommand()
+    private function prepareCommand()
     {
         $this->setCommand(strtolower((new \ReflectionClass(get_called_class()))->getShortName()));
     }
@@ -184,7 +184,7 @@ abstract class BaseCommand
      * Prepare Available Methods For Specified Command
      * @throws \ReflectionException
      */
-    protected function prepareMethods()
+    private function prepareMethods()
     {
         $classMethods = array_diff(get_class_methods(get_called_class()), get_class_methods(__CLASS__));
         foreach ($classMethods as $method) {
@@ -201,7 +201,7 @@ abstract class BaseCommand
      * @param string $method
      * @return string
      */
-    protected function generateCommand(string $method) : string
+    private function generateCommand(string $method) : string
     {
         preg_match_all('/((?:^|[A-Z])[a-z]+)/', $method, $matches);
         $elements = array_map('strtolower', $matches[0]);

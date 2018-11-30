@@ -219,7 +219,7 @@ abstract class BaseCommand
      * @return string: list of command parameters
      * @throws \ReflectionException
      */
-    protected function generateQueryString(string $class, string $method) : string
+    private function generateQueryString(string $class, string $method) : string
     {
         $reflection =  new \ReflectionMethod($class, $method);
 
@@ -262,7 +262,7 @@ abstract class BaseCommand
      * @return array
      * @codeCoverageIgnore
      */
-    protected function processOutput(string $commandOutput, bool $helpFunction = false)
+    private function processOutput(string $commandOutput, bool $helpFunction = false)
     {
         return array_filter(explode(PHP_EOL, $commandOutput));
     }
@@ -272,7 +272,7 @@ abstract class BaseCommand
      * @param string $command
      * @return string
      */
-    protected function parseCommand(string $command) : string
+    private function parseCommand(string $command) : string
     {
         $replacements = [
             'gm level'              =>  'gmlevel',

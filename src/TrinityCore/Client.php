@@ -1,111 +1,242 @@
-<?php namespace App\TrinityCore;
+<?php
+namespace App\TrinityCore;
 
-use App\TrinityCore\Abstracts\BaseClient;
-use App\TrinityCore\Commands\Account;
-use App\TrinityCore\Commands\BNetAccount;
-use App\TrinityCore\Commands\GM;
-use App\TrinityCore\Commands\Guild;
-use App\TrinityCore\Commands\LFG;
-use App\TrinityCore\Commands\Character;
-use App\TrinityCore\Commands\Reset;
-use App\TrinityCore\Commands\Send;
-use App\TrinityCore\Commands\Server;
+use App\TrinityCore\Exceptions\SoapException;
 
 /**
  * Class Client
- * @package FreedomCore\TrinityCore\Console
+ * @package FreedomCore\TrinityCore\Console\Abstracts
  */
-class Client extends BaseClient
+class Client
 {
 
+    /**
+     * Server Address
+     * @var string
+     */
+    private $serverAddress = '127.0.0.1';
 
     /**
-     * Get Account Command Instance
-     * @return Account
-     * @throws \ReflectionException
+     * Server Port
+     * @var int
      */
-    public function account() : Account
+    private $serverPort = 7878;
+
+    /**
+     * SoapClient Instance
+     * @var \SoapClient
+     */
+    private $client;
+
+    /**
+     * Username used to connect to the server
+     * @var null|string
+     */
+    private $username = null;
+
+    /**
+     * Password used to connect to the server
+     * @var null|string
+     */
+    private $password = null;
+
+    /**
+     * Client constructor.
+     * @param string $username Username used to connect to the server
+     * @param string $password Password used to connect to the server
+     * @throws SoapException
+     */
+    public function __construct(string $username, string $password)
     {
-        return (new Account($this->getClient()));
+        $this->isSoapEnabled();
+        $this->setUsername($username);
+        $this->setPassword($password);
+        $this->createConnection();
     }
 
     /**
-     * Get Bnet Command Instance
-     * @return BNetAccount
-     * @throws \ReflectionException
+     * @return string
      */
-    public function bnet() : BNetAccount
+    public function getServerAddress(): string
     {
-        return (new BNetAccount($this->getClient()));
+        return $this->serverAddress;
     }
 
     /**
-     * Get Character Command Instance
-     * @return Character
-     * @throws \ReflectionException
+     * @param string $serverAddress
      */
-    public function character() : Character
+    public function setServerAddress(string $serverAddress): void
     {
-        return (new Character($this->getClient()));
+        if ($serverAddress==='') {
+            throw new \RuntimeException('SOAP Address cannot be null!');
+        }
+        $this->serverAddress = $serverAddress;
+    }
+
+
+
+
+    /**
+     * @return int
+     */
+    public function getServerPort(): int
+    {
+        return $this->serverPort;
     }
 
     /**
-     * Get GM Command Instance
-     * @return GM
-     * @throws \ReflectionException
+     * @param int $serverPort
      */
-    public function gm() : GM
+    public function setServerPort(int $serverPort): void
     {
-        return (new GM($this->getClient()));
+        if ($serverPort < 1) {
+            throw new \RuntimeException('SOAP Port cannot be null!');
+        }
+        $this->serverPort = $serverPort;
+    }
+
+
+
+    /**
+     * Set username variable
+     * @param string $username
+     */
+    public function setUsername(string $username)
+    {
+        if ($username === '') {
+            throw new \RuntimeException('SOAP Username cannot be null!');
+        }
+        $this->username = $username;
     }
 
     /**
-     * Get Guild Command Instance
-     * @return Guild
-     * @throws \ReflectionException
+     * Get username variable
+     * @return string
      */
-    public function guild() : Guild
+    public function getUsername() : string
     {
-        return (new Guild($this->getClient()));
+        return $this->username;
     }
 
     /**
-     * Get LFG Command Instance
-     * @return LFG
-     * @throws \ReflectionException
+     * Set password variable
+     * @param string $password
      */
-    public function lfg() : LFG
+    public function setPassword(string $password)
     {
-        return (new LFG($this->getClient()));
+        if ($password === '') {
+            throw new \RuntimeException('SOAP Password cannot be null!');
+        }
+        $this->password = $password;
     }
 
     /**
-     * Get Reset Command Instance
-     * @return Reset
-     * @throws \ReflectionException
+     * Get password variable
+     * @return string
      */
-    public function reset() : Reset
+    public function getPassword() : string
     {
-        return (new Reset($this->getClient()));
+        return $this->password;
     }
 
     /**
-     * Get Send Command Instance
-     * @return Send
-     * @throws \ReflectionException
+     * Set Server Address
+     * @param string $serverAddress
+     * @return Client
      */
-    public function send() : Send
+    public function setAddress(string $serverAddress) : Client
     {
-        return (new Send($this->getClient()));
+        $this->serverAddress = $serverAddress;
+        return $this;
     }
 
     /**
-     * Get Server Command Instance
-     * @return Server
-     * @throws \ReflectionException
+     * Get Server Address
+     * @return string
      */
-    public function server() : Server
+    public function getAddress() : string
     {
-        return (new Server($this->getClient()));
+        return $this->serverAddress;
+    }
+
+    /**
+     * Set Server Port
+     * @param int $serverPort
+     * @return Client
+     */
+    public function setPort(int $serverPort) : Client
+    {
+        $this->serverPort = $serverPort;
+        return $this;
+    }
+
+    /**
+     * Get Server Port
+     * @return int
+     */
+    public function getPort() : int
+    {
+        return $this->serverPort;
+    }
+
+    /**
+     * Initialize Connection To The Server
+     */
+    public function createConnection()
+    {
+        $this->setClient(new \SoapClient(null, [
+            'location'      =>  'http://' . $this->getServerAddress() . ':' . $this->getServerPort() . '/',
+            'uri'           =>  'urn:TC',
+            'login'         =>  $this->getUsername(),
+            'password'      =>  $this->getPassword(),
+            'style'         =>  SOAP_RPC,
+            'keep_alive'    =>  false
+        ]));
+
+
+    }
+
+    /**
+     * Get Client Instance
+     * @return \SoapClient
+     */
+    public function getClient() : \SoapClient
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param \SoapClient $client
+     */
+    public function setClient(\SoapClient $client): void
+    {
+        $this->client = $client;
+    }
+
+
+
+    /**
+     * Check if SOAP extension is enabled
+     * @throws SoapException
+     * @codeCoverageIgnore
+     */
+    protected function isSoapEnabled()
+    {
+        if (!extension_loaded('soap')) {
+            throw new SoapException('FreedomNet requires SOAP extension to be enabled.' . PHP_EOL . 'Please enable SOAP extension');
+        }
+    }
+
+
+
+    /**
+     * Execute Command
+     * @param string $command
+     * @return array|string
+     * @codeCoverageIgnore
+     */
+    public function executeCommand(string $command)
+    {
+        return $this->getClient()->executeCommand(new \SoapParam($command, 'command'));
     }
 }

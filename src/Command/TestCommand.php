@@ -39,7 +39,7 @@ class TestCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $console = new Client('gabknight', 'GAB13naki');
-        $console->send()->message('test', 'Message in the middle of the screen by administrator');
+        $console->executeCommand('send message test Message in the middle of the screen by administrator');
 
     }
 }

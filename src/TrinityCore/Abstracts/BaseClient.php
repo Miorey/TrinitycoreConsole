@@ -7,14 +7,8 @@ use App\TrinityCore\Exceptions\SoapException;
  * Class BaseClient
  * @package FreedomCore\TrinityCore\Console\Abstracts
  */
-abstract class BaseClient
+class BaseClient
 {
-
-    /**
-     * Package Version
-     * @var string
-     */
-    const VERSION = '1.0.5';
 
     /**
      * Server Address
@@ -186,15 +180,6 @@ abstract class BaseClient
     }
 
     /**
-     * Get Client Version
-     * @return string
-     */
-    public function getVersion() : string
-    {
-        return BaseClient::VERSION;
-    }
-
-    /**
      * Initialize Connection To The Server
      */
     public function createConnection()
@@ -240,5 +225,18 @@ abstract class BaseClient
         if (!extension_loaded('soap')) {
             throw new SoapException('FreedomNet requires SOAP extension to be enabled.' . PHP_EOL . 'Please enable SOAP extension');
         }
+    }
+
+
+
+    /**
+     * Execute Command
+     * @param string $command
+     * @return array|string
+     * @codeCoverageIgnore
+     */
+    public function executeCommand(string $command)
+    {
+        return $this->getClient()->executeCommand(new \SoapParam($command, 'command'));
     }
 }

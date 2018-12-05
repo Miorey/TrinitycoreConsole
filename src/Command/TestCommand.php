@@ -14,6 +14,14 @@ use App\TrinityCore\Client;
 
 class TestCommand extends Command
 {
+    private $trinityClient;
+
+    public function __construct(Client $trinityClient, ?string $name = null)
+    {
+        $this->trinityClient = $trinityClient;
+        parent::__construct($name);
+    }
+
     protected function configure()
     {
 
@@ -37,8 +45,9 @@ class TestCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $console = new Client('gabknight', 'GAB13naki');
-        $console->executeCommand('send message test Message in the middle of the screen by administrator');
+        $this->trinityClient->executeCommand('send message test Message in the middle of the screen by administrator');
 
     }
+
+
 }

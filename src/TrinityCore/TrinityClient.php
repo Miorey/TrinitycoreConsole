@@ -4,10 +4,10 @@ namespace App\TrinityCore;
 use App\TrinityCore\Exceptions\SoapException;
 
 /**
- * Class Client
+ * Class TrinityClient
  * @package FreedomCore\TrinityCore\Console\Abstracts
  */
-class Client
+class TrinityClient
 {
 
     /**
@@ -41,7 +41,7 @@ class Client
     private $password = null;
 
     /**
-     * Client constructor.
+     * TrinityClient constructor.
      * @param string $username Username used to connect to the server
      * @param string $password Password used to connect to the server
      * @throws SoapException
@@ -142,9 +142,9 @@ class Client
     /**
      * Set Server Address
      * @param string $serverAddress
-     * @return Client
+     * @return TrinityClient
      */
-    public function setAddress(string $serverAddress) : Client
+    public function setAddress(string $serverAddress) : TrinityClient
     {
         $this->serverAddress = $serverAddress;
         return $this;
@@ -162,9 +162,9 @@ class Client
     /**
      * Set Server Port
      * @param int $serverPort
-     * @return Client
+     * @return TrinityClient
      */
-    public function setPort(int $serverPort) : Client
+    public function setPort(int $serverPort) : TrinityClient
     {
         $this->serverPort = $serverPort;
         return $this;
@@ -197,7 +197,7 @@ class Client
     }
 
     /**
-     * Get Client Instance
+     * Get TrinityClient Instance
      * @return \SoapClient
      */
     public function getClient() : \SoapClient

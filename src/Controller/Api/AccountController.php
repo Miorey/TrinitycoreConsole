@@ -15,6 +15,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\TrinityCore\TrinityClient;
+use Psr\Log\LoggerInterface;
 
 class AccountController extends FOSRestController
 {
@@ -25,38 +26,23 @@ class AccountController extends FOSRestController
         $this->setTrinityClient($trinityClient);
     }
 
+
     /**
+     * @param LoggerInterface $logger
      * @param Request $request
      * @param string $account
      * @param string $oldPassword
      * @param string $newPassword
      * @return View
-     * @Rest\Get("/account/{account}/{oldPassword}/{newPassword}")
      * @throws \App\TrinityCore\Exceptions\SoapException
+     * @Rest\Get("/account/{account}/{oldPassword}/{newPassword}")
      */
-    public function getAccount(Request $request, string $account, string $oldPassword, string $newPassword) : View {
-        $client = new TrinityClient($account, $oldPassword);
-        $command = "account password {$account} {$oldPassword} {$newPassword} {$newPassword}";
-        $ret = $client->executeCommand($command);
+    public function getAccount(LoggerInterface $logger,  Request $request, string $account, string $oldPassword, string $newPassword) : View {
+        $logger->info('Hello world');
+        $command = "account set password {$account} {$newPassword} {$newPassword}";
+        $logger->info($command);
+        $ret = $this->getTrinityClient()->executeCommand($command);
         return View::create($ret, Response::HTTP_ACCEPTED);
-    }
-
-    public function putAccount(Request $request) {
-
-    }
-
-    public function postAccount(Request $request) {
-
-    }
-
-    /**
-     * @param Request $request
-     * @return View
-     * @Rest\Get("/accounts/online")
-     */
-    public function getOnline(Request $request){
-        $ret = $this->getTrinityClient()->executeCommand('account onlinelist');
-        return View::create($ret, Response::HTTP_OK);
     }
 
     /**

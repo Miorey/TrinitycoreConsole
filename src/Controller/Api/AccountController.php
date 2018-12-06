@@ -34,7 +34,6 @@ class AccountController extends FOSRestController
      * @param string $oldPassword
      * @param string $newPassword
      * @return View
-     * @throws \App\TrinityCore\Exceptions\SoapException
      * @Rest\Get("/account/{account}/{oldPassword}/{newPassword}")
      */
     public function getAccount(LoggerInterface $logger,  Request $request, string $account, string $oldPassword, string $newPassword) : View {

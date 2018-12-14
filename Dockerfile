@@ -14,6 +14,10 @@ RUN mkdir /run/openrc
 RUN touch /run/openrc/softlevel
 
 RUN mv .env.prod .env
+
+RUN rm -rf /var/www/localhost/htdocs
+RUN ln -s /var/symfony4/public/ /var/www/localhost/htdocs
+
 #RUN composer require symfony/web-server-bundle
 #CMD ["php", "./bin/console server:run 0.0.0.0:8000 --env=prod"]
 

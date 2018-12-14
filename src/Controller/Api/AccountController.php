@@ -26,7 +26,6 @@ class AccountController extends FOSRestController
         $this->setTrinityClient($trinityClient);
     }
 
-
     /**
      * @param LoggerInterface $logger
      * @param Request $request

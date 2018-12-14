@@ -5,21 +5,18 @@ COPY . .
 
 #RUN  apt-get update && apt install -y php7.2-soap
 RUN apk add --no-cache libxml2-dev \
-        openrc \
-        php7-apache2 \
-        apache2
+                        openrc \
+                        apache2 \
+                        php7-apache2 \
+                        php7-ctype \
+                        php7-json
 
-RUN docker-php-ext-install soap \
+RUN docker-php-ext-install \
         xml \
-        pcntl\
+        soap \
+        pcntl \
         ctype \
         json
-
-RUN docker-php-ext-enable soap \
-          xml \
-          pcntl\
-          ctype \
-          json
 
 #fix an apache2 bug on alpine
 #RUN composer install --no-devl --ignore-platform-reqs --no-scripts

@@ -51,7 +51,6 @@ class TrinityClient
         $this->isSoapEnabled();
         $this->setUsername($username);
         $this->setPassword($password);
-        $this->createConnection();
     }
 
     /**
@@ -202,6 +201,9 @@ class TrinityClient
      */
     public function getClient() : \SoapClient
     {
+        if(!$this->client) {
+            $this->createConnection();
+        }
         return $this->client;
     }
 

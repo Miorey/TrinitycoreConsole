@@ -8,7 +8,6 @@
 
 namespace App\Controller\Api;
 
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,6 +49,21 @@ class CommandController
     public function getCommand() : View
     {
         $ret = $this->getTrinityClient()->executeCommand("send message test Hello");
+        return View::create($ret, Response::HTTP_ACCEPTED);
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @param Request $request
+     * @return View
+     * @Rest\Post("/command")
+     */
+    public function postCommand(LoggerInterface $logger, Request $request) : View
+    {
+        $command = $request->get('command');
+        $ret = $this->getTrinityClient()->executeCommand($command);
+        $log = $request->get('no_log') ? 'The log are denied' : $command;
+        $logger->warning($log);
         return View::create($ret, Response::HTTP_ACCEPTED);
     }
 }

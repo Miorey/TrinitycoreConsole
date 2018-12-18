@@ -4,21 +4,25 @@ WORKDIR /var/symfony4
 COPY . .
 
 #RUN  apt-get update && apt install -y php7.2-soap
+RUN apk update
 RUN apk add --no-cache libxml2-dev \
                         openrc \
                         apache2 \
+                        curl \
                         php7-apache2 \
                         php7-ctype \
                         php7-json \
                         php7-soap \
-                        php7-xml
+                        php7-xml \
+                        php7-pcntl \
+                        php7-curl
 
 RUN docker-php-ext-install \
-        xml \
-        soap \
-        pcntl \
         ctype \
-        json
+        json \
+        soap \
+        xml \
+        pcntl
 
 #fix an apache2 bug on alpine
 #RUN composer install --no-devl --ignore-platform-reqs --no-scripts

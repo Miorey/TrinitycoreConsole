@@ -9,7 +9,9 @@ RUN apk add --no-cache libxml2-dev \
                         apache2 \
                         php7-apache2 \
                         php7-ctype \
-                        php7-json
+                        php7-json \
+                        php7-soap \
+                        php7-xml
 
 RUN docker-php-ext-install \
         xml \

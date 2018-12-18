@@ -10,6 +10,7 @@ namespace App\EventListener;
 
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -38,14 +39,17 @@ class TrinityListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::EXCEPTION => array('onKernelException', -64),
+            KernelEvents::EXCEPTION => array('onKernelException', -65)
         );
     }
 
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        if (($e = $event->getException()) instanceof \SoapFault) {
-            throw new BadRequestHttpException($e->getMessage());
+        if ($event->getException() instanceof \SoapFault) {
+            $response = new Response();
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            $response->setContent($event->getException()->getMessage());
+            $event->setResponse($response);
         }
     }
 }

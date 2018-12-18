@@ -44,7 +44,7 @@ class TestCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->trinityClient->executeCommand('account onlinelist');
+        $this->trinityClient->executeCommand('send message test hello');
 
     }
 

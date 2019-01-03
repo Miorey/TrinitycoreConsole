@@ -56,6 +56,15 @@
     "psr/simple-cache": {
         "version": "1.0.1"
     },
+    "symfony/apache-pack": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "c82bead70f9a4f656354a193df7bf0ca2114efa0"
+        }
+    },
     "symfony/cache": {
         "version": "v4.1.7"
     },
@@ -78,7 +87,7 @@
         "version": "v4.1.7"
     },
     "symfony/dotenv": {
-        "version": "v4.1.7"
+        "version": "v4.1.9"
     },
     "symfony/event-dispatcher": {
         "version": "v4.1.7"
@@ -130,6 +139,15 @@
     },
     "symfony/process": {
         "version": "v4.1.8"
+    },
+    "symfony/requirements-checker": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "93d0ec48679f5e240d265088305c1ad775723f93"
+        }
     },
     "symfony/routing": {
         "version": "4.0",

@@ -31,8 +31,8 @@ services:
 
     App\TrinityCore\TrinityClient:
         arguments:
-            $username: 'admin'
-            $password: 'admin'
+            $username: '%env(TRINITY_USERNAME)%'
+            $password: '%env(TRINITY_PASSWORD)%'
 
         calls:
             - method: setServerAddress

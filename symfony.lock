@@ -137,6 +137,9 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.10.0"
     },
+    "symfony/polyfill-php72": {
+        "version": "v1.10.0"
+    },
     "symfony/process": {
         "version": "v4.1.8"
     },
@@ -166,6 +169,9 @@
     },
     "symfony/templating": {
         "version": "v4.1.8"
+    },
+    "symfony/var-dumper": {
+        "version": "v4.1.9"
     },
     "symfony/web-server-bundle": {
         "version": "3.3",

@@ -19,6 +19,7 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
+        "symfony/var-dumper": "4.1.*",
         "symfony/web-server-bundle": "4.1.*"
     },
     "config": {

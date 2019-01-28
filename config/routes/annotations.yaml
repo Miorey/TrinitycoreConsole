@@ -1,6 +1,7 @@
-web_controller:
-    resource: ../../src/Controller/Web/
-    type: annotation
+# Maybe later
+#web_controller:
+#    resource: ../../src/Controller/Web/
+#    type: annotation
 rest_controller:
     resource: ../../src/Controller/Api/
     type: annotation

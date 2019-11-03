@@ -36,8 +36,8 @@ class AccountSetPasswordCommand extends Command
             // the full command description shown when running the command with
             // the "--help" option
             ->setHelp('Example trinity:account:set:password --account hello --password world')
-            ->addOption('account','a', InputArgument::REQUIRED, 'Principal account')
-            ->addOption('password','p', InputArgument::REQUIRED, 'New account password');
+            ->addOption('account','a', InputArgument::OPTIONAL, 'Principal account')
+            ->addOption('password','p', InputArgument::OPTIONAL, 'New account password');
     }
 
     /**

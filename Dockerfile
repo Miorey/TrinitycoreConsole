@@ -27,8 +27,8 @@ RUN docker-php-ext-install \
 
 #fix an apache2 bug on alpine
 RUN composer install --no-dev --optimize-autoloader  --no-scripts
-RUN mkdir /run/apache2
-RUN mkdir /run/openrc
+RUN mkdir -p /run/apache2
+RUN mkdir -p /run/openrc
 RUN touch /run/openrc/softlevel
 
 RUN mv .env.prod .env

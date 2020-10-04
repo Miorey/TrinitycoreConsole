@@ -7,6 +7,13 @@ On Ubuntu the following libraries have to be installed:
 sudo apt install -y php7.2 php7.2-xml php7.2-soap composer
 ```
 
+On Mac
+
+```bash
+
+
+```
+
 Install dependencies by executing:
 ```bash
 composer install
